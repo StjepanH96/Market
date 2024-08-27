@@ -1,7 +1,7 @@
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-export const fetchProducts = async ({ limit = 10, skip = 0 } = {}) => {
-  let url = `${BASE_URL}/products?limit=${limit}&skip=${skip}`;
+export const fetchProducts = async ({ limit = 10, skip = 0 }) => {
+let url = `${BASE_URL}/products?limit=${encodeURIComponent(limit)}&skip=${encodeURIComponent(skip)}`;
 
   try {
     const response = await fetch(url, {
@@ -22,8 +22,9 @@ export const fetchProducts = async ({ limit = 10, skip = 0 } = {}) => {
   }
 };
 
-export const fetchProductsByCategory = async (categoryName:string) => {
-  const url = `${BASE_URL}/products/category/${categoryName}`;
+export const fetchProductsByCategory = async (categoryName: string | string[] | undefined, limit = 16) => {
+  // Append the limit parameter to the API request URL
+  const url = `${BASE_URL}/products/category/${encodeURIComponent(String(categoryName))}?limit=${limit}`;
 
   try {
     const response = await fetch(url, {
@@ -68,7 +69,7 @@ export const fetchSortedProductsByPrice = async (sortBy = 'title', order = 'asc'
 
 export const fetchProductsCategoryList = async () => {
 
-  const url = `${BASE_URL}/products/category/category-list`;
+  const url = `${BASE_URL}/products/categories`;
 
   try {
     const response = await fetch(url, {
@@ -90,9 +91,10 @@ export const fetchProductsCategoryList = async () => {
 
 }
 
-export const fetchProductById = async (productId:number) => {
+export const fetchProductById = async (productId:string | string[]) => {
   const url = `${BASE_URL}/products/${productId}`;
 
+  console.log(productId);
   try {
     const response = await fetch(url, {
       method: 'GET',

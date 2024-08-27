@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { debounce } from 'lodash';
 import { useRouter } from 'next/router';
@@ -10,7 +10,7 @@ import {
   Input,
   SearchContainer,
 } from '@/styled-components/SearchBarStyles';
-import { Product } from '@/types/Products';
+import { Product } from '@/types/products';
 
 export const SearchBar = () => {
   const [query, setQuery] = useState<string>('');
@@ -19,26 +19,37 @@ export const SearchBar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-
   const fetchSearchResults = async (query: string): Promise<void> => {
-    const res = await fetch(`/api/search?q=${query}`);
-    const data = await res.json();
-    setResults(data.results || []);
-  };
-
-  const debouncedSearch = debounce((query: string): void => {
-    if (query.length > 0) {
-      fetchSearchResults(query);
-      setIsOpen(true);
-    } else {
-      setResults([]);
-      setIsOpen(false);
+    try {
+      const res = await fetch(`/api/search?q=${query}`);
+      if (!res.ok) {
+        throw new Error('Failed to fetch results');
+      }
+      const data = await res.json();
+      console.log(data);
+      setResults(data.results || []);
+    } catch (error) {
+      console.error('Error fetching search results:', error);
     }
-  }, 300);
-
+  };
+  
+  const debouncedSearch = useCallback(
+    debounce((query: string): void => {
+      if (query.length > 0) {
+        fetchSearchResults(query);
+        setIsOpen(true);
+      } else {
+        setResults([]);
+        setIsOpen(false);
+      }
+    }, 200),
+    []
+  );
+  
   useEffect(() => {
     debouncedSearch(query);
-  }, [query]);
+  }, [debouncedSearch, query]);
+
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent): void => {
@@ -62,10 +73,10 @@ export const SearchBar = () => {
       setSelectedIndex((prev) => (prev > 0 ? prev - 1 : 0));
     } else if (e.key === 'Enter') {
       if (selectedIndex >= 0 && results.length > 0) {
-        router.push(`/Product/${results[selectedIndex].id}`);
+        router.push(`/product/${results[selectedIndex].id}`);
       } else if (query.trim().length > 0) {
         router.push(
-          `pages/Product/search-product/search?q=${encodeURIComponent(query)}`
+          `pages/product/search-product/search?q=${encodeURIComponent(query)}`
         );
       }
     }

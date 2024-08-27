@@ -1,6 +1,6 @@
 
 export * from './ErrorModalStyles';
-export * from './FavoriteDropdownStyles';
+export * from './DropdownStyles';
 export * from './FavoriteStartStyles';
 export * from './FilterComponent';
 export * from './FooterStyles';

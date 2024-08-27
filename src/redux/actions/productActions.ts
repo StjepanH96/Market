@@ -6,7 +6,6 @@ import {
   initializeProducts,
    setLoading,
   setError,
-  appendProducts,
   setSortedAndFilteredProductsByPrice,
   initializeCategoryList,
   initializeProductsByCategory,
@@ -14,22 +13,24 @@ import {
   
 } from '../reducers/products/productSlice';
 
-const fetchInitializeProductsAction = (): AppThunk => async (dispatch) => {
-  dispatch(setLoading(true));
+interface FetchProductsParams {
+  page: number;
+  limit: number;
+}
 
+const fetchInitializeProductsAction = ({ page, limit }: FetchProductsParams) => async (dispatch: any) => {
+  const skip = (page - 1) * limit;
   try {
-    const products = await fetchProducts();
-    dispatch(initializeProducts(products));
+    const data = await fetchProducts({ limit, skip });
+    // Ensure the payload structure matches what the reducer expects
+    dispatch(initializeProducts(data)); // Use the action creator for consistency
   } catch (error) {
-    console.error('Failed to fetch products:', error);
-    dispatch(setError('Failed to fetch products'));
-  } finally {
-    dispatch(setLoading(false));
+    console.error('Error:', error);
+    // Dispatching error with potentially a more descriptive error message
+    dispatch(setError('Failed to fetch products: ' ));
   }
 };
-
-
-const fetchInitiliazeProductByIdAction = (productId: number): AppThunk => async (dispatch) => {
+const fetchInitiliazeProductByIdAction = (productId: string | string[]): AppThunk => async (dispatch) => {
   dispatch(setLoading(true));
 
   try {
@@ -65,31 +66,8 @@ const fetchInitiliazeSortedProductsByPrice =
     }
   };
 
-  const fetchAppendProductsAction = (limit: number): AppThunk => async (dispatch, getState) => {
-    dispatch(setLoading(true));
   
-    const { products, hasMore } = getState().products.products;
-  
-    // Ako nema više proizvoda za dohvaćanje, prekini akciju
-    if (!hasMore) {
-      dispatch(setLoading(false));
-      return;
-    }
-  
-    // Izračunaj skip vrednost na osnovu broja već dohvaćenih proizvoda
-    const skip = products.length;
-  
-    try {
-      const appendProductsList = await fetchProducts({ limit, skip });
-      dispatch(appendProducts(appendProductsList));
-    } catch (error) {
-      console.error('Failed to fetch more products:', error);
-      dispatch(setError('Failed to fetch more products'));
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
-  const fetchProductsByCategoryAction = (categoryName: string): AppThunk => async (dispatch) => {
+  const fetchProductsByCategoryAction = (categoryName: string | string[] | undefined): AppThunk => async (dispatch) => {
     dispatch(setLoading(true));
   
     try {
@@ -122,6 +100,5 @@ export {
   fetchProductsCategoryListAction,
   fetchInitializeProductsAction,
   fetchInitiliazeSortedProductsByPrice,
-  fetchAppendProductsAction,
   fetchInitiliazeProductByIdAction
 };

@@ -1,8 +1,11 @@
 import { RootState } from '@/redux/store';
+import { Product } from '@/types/products';
 import { useSelector } from 'react-redux';
 
 export const useProductData = () => {
-  const  products = useSelector((state: RootState) => state.products.products);
+  const products = useSelector((state: RootState) => state.products.products.products as Product[]);
+
+  console.log(products);
   const productsFilteredByPrice = useSelector(
     (state: RootState) => state.products.products.sortedAndFilteredProducts
   );
@@ -16,6 +19,9 @@ export const useProductData = () => {
   const hasMore = useSelector((state: RootState) => state.products.products.hasMore);
   const loading = useSelector((state: RootState) => state.products.products.loading);
   const error = useSelector((state: RootState) => state.products.products.error);
+  const totalPages = useSelector((state: RootState) => state.products.products.totalPages);
+  const currentPage = useSelector((state: RootState) => state.products.products.currentPage);
+
 
   return {
     products,
@@ -26,5 +32,7 @@ export const useProductData = () => {
     hasMore,
     loading,
     error,
+    totalPages,
+    currentPage
   };
 };

@@ -1,36 +1,34 @@
 import { fetchProductsByCategory } from '@/pages/api';
 import { useAppDispatch } from '../../../lib/storeHooks';
 import {
-  fetchAppendProductsAction,
   fetchInitializeProductsAction,
   fetchInitiliazeSortedProductsByPrice,
   fetchProductsByCategoryAction,
-  fetchProductsCategoryListAction
+  fetchProductsCategoryListAction,
+  fetchInitiliazeProductByIdAction
 } from '../../actions/productActions';
 import { useCallback } from 'react';
 
 export const useProductActions = () => {
   const dispatch = useAppDispatch();
 
-  const initializeProductsState = useCallback(() => {
-    dispatch(fetchInitializeProductsAction());
-  }, [dispatch]);
-
-  /*
+  const initializeProductsState = useCallback(({ page, limit }: { page: number; limit: number }) => {
+    dispatch(fetchInitializeProductsAction({ page, limit }));
+}, [dispatch]);
+  
   const initializeProductDetails = useCallback(
-    (productId: string | string[] | undefined) => {
-      dispatch(fetchInitializeProductDetails(productId));
+    (productId: string | string[] ) => {
+      dispatch(fetchInitiliazeProductByIdAction(productId));
     },
     [dispatch]
   );
-
-  */
+  
 
   const initializeProductsByPriceState = useCallback((sortBy:string, order:string ) => {
     dispatch(fetchInitiliazeSortedProductsByPrice(sortBy, order));
   }, [dispatch]);
 
-  const initializeProductsByCategoryState= useCallback((categoryName:string ) => {
+  const initializeProductsByCategoryState= useCallback((categoryName:string | string[] | undefined ) => {
     dispatch(fetchProductsByCategoryAction(categoryName));
   }, [dispatch]);
 
@@ -39,15 +37,13 @@ export const useProductActions = () => {
   }, [dispatch]);
 
 
-  const initializeProductsByAppendState= useCallback((limit:number) => {
-    dispatch(fetchAppendProductsAction(limit));
-  }, [dispatch]);
 
   return {
-  initializeProductsByAppendState,
+
   initializeProductsByCategoryListState,
   initializeProductsByCategoryState,
   initializeProductsByPriceState,
-  initializeProductsState
+  initializeProductsState,
+  initializeProductDetails
   };
 };

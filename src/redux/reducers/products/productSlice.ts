@@ -10,6 +10,8 @@ export interface ProductState {
   error: string | null;
   hasMore: boolean;
   sortedAndFilteredProducts: Product[];
+  totalPages: number;  // Dodajte ovo
+  currentPage: number;  // Dodajte ovo
 }
 
 const initialState: ProductState = {
@@ -20,8 +22,10 @@ const initialState: ProductState = {
   error: null,
   hasMore: true,
   sortedAndFilteredProducts: [],
-};
+  totalPages: 0,  
+  currentPage: 1,
 
+};
 const productSlice = createSlice({
   name: 'products',
   initialState,
@@ -33,9 +37,10 @@ const productSlice = createSlice({
       state.error = action.payload;
     },
     initializeProducts: (state, action: PayloadAction<ProductResponse>) => {
-      state.products = action.payload.products;
-      state.loading = false;
+      state.products = [...state.products, ...action.payload.products]; 
       state.error = null;
+      state.currentPage = (action.payload.skip / action.payload.limit) + 1;
+      state.hasMore = action.payload.skip + action.payload.limit < action.payload.total;
     },
     initializeProductDetails: (state, action: PayloadAction<Product>) => {
       state.productDetails = action.payload;
@@ -53,12 +58,7 @@ const productSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
-    appendProducts: (state, action: PayloadAction<ProductResponse>) => {
-      state.products = [...state.products, ...action.payload.products];
-      state.error = null;
-      // Postavi hasMore na osnovu broja dohvaćenih proizvoda
-      state.hasMore = action.payload.skip + action.payload.limit < action.payload.total;
-    },
+
     setSortedAndFilteredProductsByPrice: (state, action: PayloadAction<Product[]>) => {
       state.sortedAndFilteredProducts = action.payload;
       state.loading = false;
@@ -72,7 +72,6 @@ export const {
   initializeProductDetails,
   setLoading,
   setError,
-  appendProducts,
   setSortedAndFilteredProductsByPrice,
   initializeCategoryList,
   initializeProductsByCategory,

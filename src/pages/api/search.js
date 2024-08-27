@@ -1,29 +1,28 @@
-import fetch from 'node-fetch';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
 export default async function handler(req, res) {
   const { q } = req.query;
+  
   if (!q) {
     return res.status(400).json({ error: 'Query parameter q is required' });
   }
 
-  const apiKey = process.env.TMDB_API_KEY;
-  if (!apiKey) {
-    console.error('TMDB_API_KEY is not defined');
-    return res.status(500).json({ error: 'Server configuration error' });
-  }
-  const url = `https://api.theProductdb.org/3/search/product?api_key=${apiKey}&query=${encodeURIComponent(q)}`;
+  const url = `https://dummyjson.com/products/search?q=${encodeURIComponent(q)}`;
 
   try {
     const response = await fetch(url);
     const data = await response.json();
+
     if (!response.ok) {
       console.error('Error fetching data:', response.status, response.statusText, data);
       return res.status(response.status).json({ error: response.statusText });
     }
-    res.status(200).json({ results: data.results });
+
+    const filteredResults = data.products.filter(product =>
+      product.title.toLowerCase().includes(q.toLowerCase())
+    );
+
+    const limitedResults = filteredResults.slice(0, 10);
+
+    res.status(200).json({ results: limitedResults });
   } catch (error) {
     console.error('Internal Server Error:', error);
     res.status(500).json({ error: 'Internal Server Error' });
