@@ -8,6 +8,8 @@ import { styled } from 'styled-components';
 export const NavigationBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const auth = useAuth();
 
   useEffect(() => {
@@ -25,9 +27,12 @@ export const NavigationBar = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
+  const toggleCategoryDropdown = () => setIsCategoryOpen(!isCategoryOpen);
+  const toggleCartDropdown = () => setIsCartOpen(!isCartOpen);
+
   return (
     <StyledNavigation>
-      <Logo>MarketApp</Logo>
+      <Logo>Market</Logo>
       <MenuIcon onClick={toggleMenu}>
         {isOpen ? <FaTimes /> : <FaBars />}
       </MenuIcon>
@@ -37,23 +42,18 @@ export const NavigationBar = () => {
             <FaHome /> Home
           </StyledLink>
         </Link>
-        <Link href="/product/search-product" passHref>
-          <StyledLink onClick={toggleMenu}>
-            <FaSearch /> Search
-          </StyledLink>
-        </Link>
-        <Link href="/product/category/" passHref>
-          <StyledLink onClick={toggleMenu}>
+        <div>
+          <StyledLink  onClick={toggleCategoryDropdown}>
             <FaShoppingCart /> Categories
           </StyledLink>
-        </Link>
-        <Link href="/product/favorite-Products" passHref>
-          <StyledLink onClick={toggleMenu}>
+          {isCategoryOpen && <CategoryDropdown isOpen={isCategoryOpen} toggleDropdown={toggleCategoryDropdown} />}
+        </div>
+        <div>
+          <StyledLink  onClick={toggleCartDropdown}>
             <FaShoppingCart /> Cart
           </StyledLink>
-        </Link>
-        {!isMobile && <CategoryDropdown />}
-        {!isMobile && <CartDropdown />}
+          {isCartOpen && <CartDropdown isOpen={isCartOpen} toggleDropdown={toggleCartDropdown}/>}
+        </div>
         {!isMobile && <SearchBar />}
         {auth?.user && (
           <>
@@ -79,6 +79,7 @@ const StyledNavigation = styled.nav`
   position: relative;
   z-index: 10;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width:100%;
 `;
 
 const Logo = styled.div`
@@ -162,9 +163,4 @@ const StyledLogoutButton = styled.button`
   font-size: 16px;
   border-radius: 5px;
   transition: background-color 0.3s ease;
-  margin-left: 10px;
-
-  &:hover {
-    background-color: #e64a19;
-  }
-`;
+  `;

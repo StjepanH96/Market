@@ -1,7 +1,6 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import router from 'next/router';
 import {
-  DropdownButton,
   DropdownContainer,
   DropdownContent,
   DropdownItem,
@@ -10,14 +9,13 @@ import { useProductData } from '@/lib';
 import { Category } from '@/types/categories';
 import { useProductActions } from '@/redux/reducers/products/productStateManagement';
 
-export const CategoryDropdown = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const {  productsCategoryList} = useProductData();
+export const CategoryDropdown = ({ isOpen, toggleDropdown }:Any) => {
+  const { productsCategoryList } = useProductData();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { initializeProductsByCategoryListState } = useProductActions();
 
   useEffect(() => {
-   initializeProductsByCategoryListState();
+    initializeProductsByCategoryListState();
   }, [initializeProductsByCategoryListState]);
 
   const handleProductClick = (categoryName: string) => {
@@ -25,16 +23,15 @@ export const CategoryDropdown = () => {
     if (router.asPath !== newRoute) {
       router.push(newRoute);
     }
-    setIsOpen(false);
+    toggleDropdown(); // zatvaranje dropdowna nakon klika
   };
-  const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
       dropdownRef.current &&
       !dropdownRef.current.contains(event.target as Node)
     ) {
-      setIsOpen(false);
+      toggleDropdown(); // zatvaranje dropdowna klikom van njega
     }
   };
 
@@ -51,10 +48,9 @@ export const CategoryDropdown = () => {
 
   return (
     <DropdownContainer ref={dropdownRef}>
-      <DropdownButton onClick={toggleDropdown}>Category</DropdownButton>
       <DropdownContent className={isOpen ? 'show' : ''}>
         {productsCategoryList.length > 0 ? (
-          productsCategoryList.map((category:Category, index:number) => (
+          productsCategoryList.map((category: Category, index: number) => (
             <DropdownItem
               key={index}
               onClick={() => handleProductClick(category.name)}

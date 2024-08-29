@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import LoginForm from '../components/LoginForm';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/router';
+import marketImage from '../../public/images/market.jpg';
 
 const Home = () => {
   const router = useRouter();
@@ -34,8 +35,10 @@ const PageContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; /* Promenjen minimalna visina na 100vh kako bi stranica uvek pokrivala ceo ekran */
-  background-color: #f0f2f5;
+  min-height: 100vh;
+  background-image: url('/images/market.jpg'); /* Ažuriraj putanju */
+  background-size: cover;
+  background-position: center;
 `;
 
 const Main = styled.main`
@@ -52,16 +55,16 @@ const Main = styled.main`
 `;
 
 const Title = styled.h1`
-  font-size: 2rem; /* Smanjena veličina fonta */
+  font-size: 2rem;
   color: #333;
-  margin-bottom: 15px; /* Smanjena donja margina */
+  margin-bottom: 15px;
 `;
 
 const LoginFormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px; /* Smanjena razmak između elemenata */
+  gap: 15px;
   width: 100%;
 `;
 

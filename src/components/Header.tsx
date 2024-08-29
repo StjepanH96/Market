@@ -7,11 +7,10 @@ import {
 
 export const Header = () => {
   return (
-    <HeaderContainer>
-      <Logo>Market</Logo>
+
       <Container>
         <NavigationBar />
       </Container>
-    </HeaderContainer>
+  
   );
 };
