@@ -15,7 +15,7 @@ import {
 } from "../styled-components/product/ProductStyled";
 import { Product } from '@/types/products';
 import { Cart } from './Cart';
-import { LoadingSpinner } from './Spinner';  // Make sure this import path is correct
+import { LoadingSpinner } from './Spinner';  
 
 interface ProductCardProps {
   product: Product;
@@ -23,13 +23,12 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product, onProductClick }: ProductCardProps) => {
-  const [imageLoading, setImageLoading] = useState(true);  // State to manage image loading
-
+  const [imageLoading, setImageLoading] = useState(true);  
   return (
     <ProductItem onClick={() => onProductClick(product.id)}>
       {imageLoading && (
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <LoadingSpinner />  // Display spinner while image is loading
+          <LoadingSpinner loading={imageLoading} />  
         </div>
       )}
       <ProductImage
@@ -40,7 +39,7 @@ export const ProductCard = ({ product, onProductClick }: ProductCardProps) => {
         style={{ display: imageLoading ? 'none' : 'block' }}
       />
       <FavoriteStarContainer>
-        <Cart productId={product.id} />
+        <Cart product={product} />
       </FavoriteStarContainer>
       <ProductOverlay>
         <ProductTitle>{product.title}</ProductTitle>

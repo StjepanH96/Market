@@ -2,8 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/product/category/[categoryName]": "pages/product/category/[categoryName].js",
-  "/": "pages/index.js",
-  "/api/search": "pages/api/search.js",
-  "/product/[id]": "pages/product/[id].js"
+  "/product/[id]": "pages/product/[id].js",
+  "/product/home": "pages/product/home.js",
+  "/product/search-product": "pages/product/search-product.js"
 }

@@ -1,5 +1,6 @@
 import styled, { createGlobalStyle } from 'styled-components';
-
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 const GlobalStyle = createGlobalStyle`
   * {
     margin: 0;
@@ -9,7 +10,7 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: 'Arial', sans-serif;
-    background-color: #141414;
+    background-color: #F0F0F0 ;
     color: #ffffff;
     line-height: 1.6;
   }

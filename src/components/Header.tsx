@@ -8,7 +8,7 @@ import {
 export const Header = () => {
   return (
     <HeaderContainer>
-      <Logo>ProductWatch</Logo>
+      <Logo>Market</Logo>
       <Container>
         <NavigationBar />
       </Container>

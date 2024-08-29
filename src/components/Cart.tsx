@@ -3,9 +3,10 @@ import { useCart } from '../context/CartContext';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { Product } from '@/types/products'; // Pretpostavljamo da postoji ovaj import za tip proizvoda
 
 interface CartProps {
-  productId: number;
+  product: Product;  // Umesto productId, sada primamo ceo proizvod
 }
 
 export const StyledButtonCart = styled.button`
@@ -17,7 +18,6 @@ export const StyledButtonCart = styled.button`
   border: none;
   cursor: pointer;
   color: grey;  // Default color
-  z-index: 3;
   transition: color 0.3s;
 
   &.gold {
@@ -25,17 +25,16 @@ export const StyledButtonCart = styled.button`
   }
 `;
 
-export const Cart = ({ productId }: CartProps) => {
+export const Cart = ({ product }: CartProps) => {
   const { cart, addToCart, removeFromCart } = useCart();
-  const isInCart = !!cart[productId];  // Check if the product is in the cart
+  const isInCart = !!cart[product.id];  // Proveravamo da li je proizvod u korpi
 
   const toggleCart = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
-    // Adjust quantity directly here if needed
     if (isInCart) {
-      removeFromCart(productId, 1);  // Assume removing one item at a time
+      removeFromCart(product.id, 1);  // I dalje koristimo samo product.id za uklanjanje
     } else {
-      addToCart(productId, 1);  // Assume adding one item at a time
+      addToCart(product, 1);  // Sada dodajemo ceo proizvod umesto samo ID-a
     }
   };
 

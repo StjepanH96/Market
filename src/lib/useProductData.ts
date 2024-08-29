@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 export const useProductData = () => {
   const products = useSelector((state: RootState) => state.products.products.products as Product[]);
 
-  console.log(products);
   const productsFilteredByPrice = useSelector(
     (state: RootState) => state.products.products.sortedAndFilteredProducts
   );

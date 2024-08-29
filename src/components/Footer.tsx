@@ -1,13 +1,12 @@
-import {
-  PageWrapper,
-  StyledFooter,
-  PositionFooter,
-} from '@/styled-components';
+import React from 'react';
+import { PageWrapper, StyledFooter, ContentWrapper } from '@/styled-components';
 
 export const Footer = () => {
   return (
     <PageWrapper>
-      <PositionFooter></PositionFooter>
+      <ContentWrapper>
+        {/* Ostali sadržaj stranice */}
+      </ContentWrapper>
       <StyledFooter>
         <div>
           <p>&copy; 2024 ProductApp. All rights reserved.</p>

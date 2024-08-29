@@ -1,6 +1,10 @@
 import React from 'react';
-import { styled } from 'styled-components';
-import { useProductData } from '@/lib';
+import styled from 'styled-components';
+
+// Definišemo interfejs koji prihvata loading prop
+interface LoadingSpinnerProps {
+  loading: boolean;
+}
 
 export const StyledLoadingSpinner = styled.div`
   border: 4px solid rgba(0, 0, 0, 0.1);
@@ -17,8 +21,7 @@ export const StyledLoadingSpinner = styled.div`
   }
 `;
 
-export const LoadingSpinner = () => {
-  const { loading } = useProductData();
-
+// LoadingSpinner sada prima loading prop
+export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ loading }) => {
   return loading ? <StyledLoadingSpinner /> : null;
 };

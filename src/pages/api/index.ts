@@ -22,6 +22,25 @@ let url = `${BASE_URL}/products?limit=${encodeURIComponent(limit)}&skip=${encode
   }
 };
 
+export const refreshToken = async () => {
+  const response = await fetch('/api/refresh', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          refreshToken: '/* YOUR_STORED_REFRESH_TOKEN_HERE */',
+          expiresInMins: 30
+      })
+  });
+
+  const data = await response.json();
+  if (response.ok) {
+      console.log('Token refreshed successfully:', data);
+  } else {
+      console.error('Failed to refresh token:', data);
+  }
+};
 export const fetchProductsByCategory = async (categoryName: string | string[] | undefined, limit = 16) => {
   // Append the limit parameter to the API request URL
   const url = `${BASE_URL}/products/category/${encodeURIComponent(String(categoryName))}?limit=${limit}`;

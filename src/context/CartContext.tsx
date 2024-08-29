@@ -1,37 +1,76 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { Product } from '@/types/products';
 import { useProductData } from '@/lib';
+import { useAuth } from './AuthContext';
 
 interface CartContextType {
   cart: { [productId: number]: number };
-  addToCart: (productId: number, quantity: number) => void;
+  addToCart: (product: Product, quantity: number) => void;
   removeFromCart: (productId: number, quantity: number) => void;
   getCartProducts: () => Product[];
   isLoading: boolean;
   error: string | null;
 }
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
+const CartContext = createContext<CartContextType | null>(null);
 
 export const CartContextProvider = ({ children }: { children: ReactNode }) => {
   const { products } = useProductData();
+  const auth = useAuth();
   const [cart, setCart] = useState<{ [productId: number]: number }>({});
+  const [storedProducts, setStoredProducts] = useState<Product[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const storageKey = auth?.isAnonymous ? 'guestCart' : `userCart_${auth?.token}`;
+
+  // Load cart and stored products from local storage
   useEffect(() => {
-    const storedCart = localStorage.getItem('cart');
+    const storedCart = localStorage.getItem(storageKey);
+    const storedProductList = localStorage.getItem('storedProducts');
     if (storedCart) {
       setCart(JSON.parse(storedCart));
     }
-  }, []);
+    if (storedProductList) {
+      setStoredProducts(JSON.parse(storedProductList));
+    }
+  }, [storageKey]);
 
-  const addToCart = useCallback((productId: number, quantity: number) => {
+  useEffect(() => {
+    // Clear cart and stored products when switching user or when logging in as anonymous
+    if (( localStorage.getItem('authToken') !== auth?.token) || auth?.isAnonymous) {
+      // Clear local storage
+      console.log(storedProducts, cart);
+
+      localStorage.removeItem('guestCart');
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('userCart_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      localStorage.removeItem('storedProducts');
+  
+      // Reset state
+      setCart({});
+      setStoredProducts([]);
+    }
+  }, [auth?.token, auth?.isAnonymous]);
+
+  const addToCart = useCallback((product: Product, quantity: number) => {
     setLoading(true);
     try {
       setCart(prevCart => {
-        const updatedCart = { ...prevCart, [productId]: (prevCart[productId] || 0) + quantity };
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
+        const updatedCart = { ...prevCart, [product.id]: (prevCart[product.id] || 0) + quantity };
+        localStorage.setItem(storageKey, JSON.stringify(updatedCart));
+        setStoredProducts(prevStoredProducts => {
+          const isProductStored = prevStoredProducts.some(p => p.id === product.id);
+          if (!isProductStored) {
+            const updatedStoredProducts = [...prevStoredProducts, product];
+            localStorage.setItem('storedProducts', JSON.stringify(updatedStoredProducts));
+            return updatedStoredProducts;
+          }
+          return prevStoredProducts;
+        });
         return updatedCart;
       });
     } catch (e) {
@@ -39,7 +78,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [storageKey]);
 
   const removeFromCart = useCallback((productId: number, quantity: number) => {
     setLoading(true);
@@ -47,25 +86,30 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
       setCart(prevCart => {
         const currentQuantity = prevCart[productId] || 0;
         const updatedQuantity = currentQuantity - quantity;
+        let updatedCart;
         if (updatedQuantity > 0) {
-          return { ...prevCart, [productId]: updatedQuantity };
+          updatedCart = { ...prevCart, [productId]: updatedQuantity };
         } else {
-          const updatedCart = { ...prevCart };
+          updatedCart = { ...prevCart };
           delete updatedCart[productId];
-          localStorage.setItem('cart', JSON.stringify(updatedCart));
-          return updatedCart;
         }
+        localStorage.setItem(storageKey, JSON.stringify(updatedCart));
+        return updatedCart;
       });
     } catch (e) {
       setError('Failed to update cart');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [storageKey]);
+
 
   const getCartProducts = useCallback(() => {
-    return products.filter(product => cart.hasOwnProperty(product.id));
-  }, [products, cart]);
+    const cartProductIds = Object.keys(cart).map(Number);
+    const availableProducts = products.filter(product => cartProductIds.includes(product.id));
+    const unavailableProducts = storedProducts.filter(product => cartProductIds.includes(product.id) && !availableProducts.some(p => p.id === product.id));
+    return [...availableProducts, ...unavailableProducts];
+  }, [products, cart, storedProducts]);
 
   return (
     <CartContext.Provider value={{ cart, addToCart, removeFromCart, getCartProducts, isLoading, error }}>

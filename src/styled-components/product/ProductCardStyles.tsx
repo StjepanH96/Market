@@ -23,7 +23,7 @@ const ProductOverlay = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.2);
   color: white;
   text-align: center;
   padding: 8px;
@@ -39,7 +39,7 @@ const FavoriteStarContainer = styled.div`
   position: absolute;
   top: 8px;
   right: 8px;
-  z-index: 10;
+
 `;
 
 export {

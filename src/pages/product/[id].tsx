@@ -48,7 +48,7 @@ const ProductPage = () => {
       <ProductContainer>
         {loading ? (
           <LoaderContainer>
-            <LoadingSpinner />
+            <LoadingSpinner loading={loading} />
           </LoaderContainer>
         ) : (
           productsDetails && (
@@ -66,7 +66,7 @@ const ProductPage = () => {
                 <ProductInfo>
                   <ProductTitleDetail>
                     {productsDetails.title}
-                    <Cart productId={productsDetails.id} />
+                    <Cart product={productsDetails} />
                   </ProductTitleDetail>
                   <ProductOverview>{productsDetails.description}</ProductOverview>
                   <ProductDetail>

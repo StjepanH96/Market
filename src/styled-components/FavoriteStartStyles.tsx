@@ -9,7 +9,7 @@ export const StyledButtonFavorite = styled.button`
   border: none;
   cursor: pointer;
   color: grey;
-  z-index: 3;
+
   transition: color 0.3s;
 
   &.gold {

@@ -1,105 +1,82 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useProductActions } from '../redux/reducers/products/productStateManagement';
-import { LoadingSpinner, ProductCard, ErrorModal } from '@/components';
-import { useProductData } from '@/lib';
-import { LoaderContainer, ProductGrid, ProductListContainer } from '@/styled-components/product';
-import { Product } from '@/types/products'; 
-import { ProductModal } from '@/components/ProductModal';
+import React from 'react';
+import styled from 'styled-components';
+import LoginForm from '../components/LoginForm';
+import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/router';
 
 const Home = () => {
-  const { initializeProductsState } = useProductActions();
-  const { products, error, loading, hasMore } = useProductData();
+  const router = useRouter();
+  const auth = useAuth();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const loaderRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    initializeProductsState({ page: 1, limit: 20 }); 
-  }, [initializeProductsState]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          loadMoreProducts();
-        }
-      },
-      {
-        root: null,
-        rootMargin: '0px',
-        threshold: 1.0,
-      }
-    );
-
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
-    }
-
-    return () => {
-      if (loaderRef.current) observer.unobserve(loaderRef.current);
-    };
-  }, [hasMore]);
-  const loadMoreProducts = () => {
-    setCurrentPage(current => {
-      const nextPage = current + 1;
-  
-      initializeProductsState({ page: nextPage, limit: 20 });
-      return nextPage;
-    });
-  };
-
-
-  
-
-  const handleProductClick = (productId: number) => {
-    const selected = products.find(product => product.id === productId);
-    if (selected) {
-      setSelectedProduct(selected);
-      setIsModalOpen(true);
-    }
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedProduct(null);
+  const handleGuestClick = () => {
+    auth?.setUser({ username: 'Guest' });
+    router.push('/product/home');
   };
 
   return (
-    <>
-      {error && <ErrorModal message={error} />}
-      <ProductListContainer>
-        <ProductGrid>
-          {products.map((product, index) => (
-            <ProductCard
-              key={index}
-              product={product}
-              onProductClick={() => handleProductClick(product.id)}
-            />
-          ))}
-        </ProductGrid>
-        {!hasMore && (
-        <div style={{ padding: "20px", textAlign: "center" }}>
-          {"A total of " + products.length + " products have been loaded."}
-        </div>
-      )}
-        {hasMore  && (
-          <LoaderContainer ref={loaderRef}>
-            <LoadingSpinner />
-          </LoaderContainer>
-        )}
-    
-      </ProductListContainer>
-      {selectedProduct && (
-        <ProductModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          productDetails={selectedProduct}
-        />
-      )}
-    </>
+    <PageContainer>
+      <Main>
+        <Title>Welcome to Market App</Title>
+        <LoginFormWrapper>
+          <LoginForm />
+          <GuestButton onClick={handleGuestClick}>Continue as Guest</GuestButton>
+        </LoginFormWrapper>
+      </Main>
+    </PageContainer>
   );
 };
 
 export default Home;
+
+// Styled-components
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Promenjen minimalna visina na 100vh kako bi stranica uvek pokrivala ceo ekran */
+  background-color: #f0f2f5;
+`;
+
+const Main = styled.main`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+`;
+
+const Title = styled.h1`
+  font-size: 2rem; /* Smanjena veličina fonta */
+  color: #333;
+  margin-bottom: 15px; /* Smanjena donja margina */
+`;
+
+const LoginFormWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px; /* Smanjena razmak između elemenata */
+  width: 100%;
+`;
+
+const GuestButton = styled.button`
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;

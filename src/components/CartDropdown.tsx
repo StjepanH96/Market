@@ -39,7 +39,7 @@ export const CartDropdown = () => {
                 {`${product.id} - ${product.title}`} ({cart[product.id]}x)
               </div>
               <QuantityControl>
-                <button onClick={() => addToCart(product.id, 1)}>+</button>
+                <button onClick={() => addToCart(product, 1)}>+</button>
                 <button onClick={() => removeFromCart(product.id, 1)}>-</button>
               </QuantityControl>
             </DropdownItem>

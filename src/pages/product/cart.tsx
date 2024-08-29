@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import router from 'next/router';
-import { useFavorites } from '@/context/FavoritesContext';
+import { useCart } from '@/context/CartContext';
 import { ErrorModal, LoadingSpinner, ProductCard } from '@/components';
 import {
   ProductListContainer,
@@ -9,8 +9,8 @@ import {
 } from '@/styled-components/product';
 
 const ProductCart = () => {
-  const { getFavoriteProducts, isLoading, error } = useFavorites();
-  const favoriteProducts = useMemo(getFavoriteProducts, [getFavoriteProducts]);
+  const { getCartProducts, isLoading, error } = useCart();
+  const favoriteProducts = useMemo(getCartProducts, [getCartProducts]);
 
   const handleProductClick = (productId: number) => {
     router.push(`/product/${productId}`);
@@ -20,7 +20,7 @@ const ProductCart = () => {
     <>
       {error && <ErrorModal message={error} />}
       {isLoading ? (
-        <LoadingSpinner />
+        <LoadingSpinner loading={isLoading} />
       ) : (
         <ProductListContainer>
           {favoriteProducts.length > 0 ? (
