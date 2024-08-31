@@ -7,7 +7,7 @@ import {
   ModalOverlay,
   StyledDetailError,
   StyledDetailErrorTitle,
-} from '@/styled-components/ErrorModalStyles';
+} from '@/styled-components';
 
 interface ErrorModalProps {
   message: string | null;

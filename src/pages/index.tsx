@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import LoginForm from '../components/LoginForm';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/router';
-import marketImage from '../../public/images/market.jpg';
 
 const Home = () => {
   const router = useRouter();
@@ -17,7 +16,7 @@ const Home = () => {
   return (
     <PageContainer>
       <Main>
-        <Title>Welcome to Market App</Title>
+        <Title>Welcome to Market</Title>
         <LoginFormWrapper>
           <LoginForm />
           <GuestButton onClick={handleGuestClick}>Continue as Guest</GuestButton>
@@ -27,16 +26,24 @@ const Home = () => {
   );
 };
 
+Home.getLayout = function getLayout(page:any) {
+  return (
+    <>
+      {page}
+    </>
+  );
+};
+
 export default Home;
 
-// Styled-components
+
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-image: url('/images/market.jpg'); /* Ažuriraj putanju */
+  background-image: url('/images/market.jpg');
   background-size: cover;
   background-position: center;
 `;

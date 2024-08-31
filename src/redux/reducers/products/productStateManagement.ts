@@ -1,4 +1,3 @@
-import { fetchProductsByCategory } from '@/pages/api';
 import { useAppDispatch } from '../../../lib/storeHooks';
 import {
   fetchInitializeProductsAction,

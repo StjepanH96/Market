@@ -1,38 +1,44 @@
-'use client';
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { FaSearch } from 'react-icons/fa';
-import { debounce } from 'lodash';
-import { useRouter } from 'next/router';
+"use client";
+import React, { useEffect,  useCallback } from "react";
+import { FaSearch } from "react-icons/fa";
+import { debounce } from "lodash";
+import { useRouter } from "next/router";
 import {
   Button,
-  Dropdown,
-  DropdownItem,
+  SearchBarDropdown,
+  SearchDropdownItem,
   Input,
   SearchContainer,
-} from '@/styled-components/SearchBarStyles';
-import { Product } from '@/types/products';
+} from "../styled-components";
+import { useDataState } from "@/lib";
 
 export const SearchBar = () => {
-  const [query, setQuery] = useState<string>('');
-  const [results, setResults] = useState<Product[]>([]);
-  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const {
+    results,
+    setResults,
+    query,
+    setQuery,
+    isOpen,
+    setIsOpen,
+    containerRef,
+    selectedIndex,
+    setSelectedIndex,
+  } = useDataState();
   const router = useRouter();
+
   const fetchSearchResults = async (query: string): Promise<void> => {
     try {
       const res = await fetch(`/api/search?q=${query}`);
       if (!res.ok) {
-        throw new Error('Failed to fetch results');
+        throw new Error("Failed to fetch results");
       }
       const data = await res.json();
-      console.log(data);
       setResults(data.results || []);
     } catch (error) {
-      console.error('Error fetching search results:', error);
+      console.error("Error fetching search results:", error);
     }
   };
-  
+
   const debouncedSearch = useCallback(
     debounce((query: string): void => {
       if (query.length > 0) {
@@ -45,11 +51,10 @@ export const SearchBar = () => {
     }, 200),
     []
   );
-  
+
   useEffect(() => {
     debouncedSearch(query);
   }, [debouncedSearch, query]);
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent): void => {
@@ -58,35 +63,40 @@ export const SearchBar = () => {
         !containerRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
+        setSelectedIndex(-1);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === 'ArrowDown') {
+    if (e.key === "ArrowDown") {
       setSelectedIndex((prev) => (prev < results.length - 1 ? prev + 1 : prev));
-    } else if (e.key === 'ArrowUp') {
+    } else if (e.key === "ArrowUp") {
       setSelectedIndex((prev) => (prev > 0 ? prev - 1 : 0));
-    } else if (e.key === 'Enter') {
+    } else if (e.key === "Enter") {
       if (selectedIndex >= 0 && results.length > 0) {
         router.push(`/product/${results[selectedIndex].id}`);
+        setIsOpen(false);
       } else if (query.trim().length > 0) {
         router.push(
           `pages/product/search-product/search?q=${encodeURIComponent(query)}`
         );
+        setIsOpen(false);
       }
     }
   };
+
   return (
     <SearchContainer ref={containerRef}>
       <>
         <Input
           type="text"
-          placeholder=" Search Products"
+          placeholder="Search Products"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -97,22 +107,23 @@ export const SearchBar = () => {
       </>
 
       {results.length > 0 && (
-        <Dropdown isOpen={isOpen}>
+        <SearchBarDropdown isOpen={isOpen}>
           {results.map((product, index) => (
-            <DropdownItem
+            <SearchDropdownItem
               key={product.id}
-              className={index === selectedIndex ? 'selected' : ''}
-              onMouseEnter={() => setSelectedIndex(index)}
-              onClick={() => {
+              className={index === selectedIndex ? "selected" : ""}
+              onMouseDown={() => {
                 setQuery(product.title);
                 setIsOpen(false);
+                setSelectedIndex(-1);
                 router.push(`/product/${product.id}`);
               }}
+              onMouseEnter={() => setSelectedIndex(index)}
             >
               {product.title}
-            </DropdownItem>
+            </SearchDropdownItem>
           ))}
-        </Dropdown>
+        </SearchBarDropdown>
       )}
     </SearchContainer>
   );

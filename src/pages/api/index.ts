@@ -34,12 +34,6 @@ export const refreshToken = async () => {
       })
   });
 
-  const data = await response.json();
-  if (response.ok) {
-      console.log('Token refreshed successfully:', data);
-  } else {
-      console.error('Failed to refresh token:', data);
-  }
 };
 export const fetchProductsByCategory = async (categoryName: string | string[] | undefined, limit = 16) => {
   // Append the limit parameter to the API request URL
@@ -113,7 +107,6 @@ export const fetchProductsCategoryList = async () => {
 export const fetchProductById = async (productId:string | string[]) => {
   const url = `${BASE_URL}/products/${productId}`;
 
-  console.log(productId);
   try {
     const response = await fetch(url, {
       method: 'GET',

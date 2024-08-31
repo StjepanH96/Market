@@ -11,7 +11,7 @@ export const useProductData = () => {
   const productsDetails = useSelector(
     (state: RootState) => state.products.products.productDetails
   );
-  const productsByCategory = useSelector((state: RootState) => state.products.products);
+  const productsByCategory = useSelector((state: RootState) => state.products.products.productsByCategories);
   const productsCategoryList= useSelector(
     (state: RootState) => state.products.products.categories
   );

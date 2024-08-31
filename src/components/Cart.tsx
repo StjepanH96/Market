@@ -1,13 +1,39 @@
-import React from 'react';
-import { useCart } from '../context/CartContext';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
-import { Product } from '@/types/products'; // Pretpostavljamo da postoji ovaj import za tip proizvoda
+import React from "react";
+import { useCart } from "../context/CartContext";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { Product } from "@/types/products";
 
 interface CartProps {
-  product: Product;  // Umesto productId, sada primamo ceo proizvod
+  product: Product;
 }
+
+export const Cart = ({ product }: CartProps) => {
+  const { cart, addToCart, removeFromCart } = useCart();
+  const isInCart = !!cart[product.id];
+
+  const toggleCart = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.stopPropagation();
+    if (isInCart) {
+      removeFromCart(product.id, 1);
+    } else {
+      addToCart(product, 1);
+    }
+  };
+
+  return (
+    <StyledButtonCart
+      onClick={toggleCart}
+      aria-label="Toggle cart"
+      className={`cart-icon ${isInCart ? "gold" : ""}`}
+    >
+      <FontAwesomeIcon icon={faShoppingCart} />
+    </StyledButtonCart>
+  );
+};
 
 export const StyledButtonCart = styled.button`
   position: absolute;
@@ -17,34 +43,10 @@ export const StyledButtonCart = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  color: grey;  // Default color
+  color: grey; 
   transition: color 0.3s;
 
   &.gold {
-    color: gold;  // Color when the item is in the cart
+    color: gold; 
   }
 `;
-
-export const Cart = ({ product }: CartProps) => {
-  const { cart, addToCart, removeFromCart } = useCart();
-  const isInCart = !!cart[product.id];  // Proveravamo da li je proizvod u korpi
-
-  const toggleCart = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.stopPropagation();
-    if (isInCart) {
-      removeFromCart(product.id, 1);  // I dalje koristimo samo product.id za uklanjanje
-    } else {
-      addToCart(product, 1);  // Sada dodajemo ceo proizvod umesto samo ID-a
-    }
-  };
-
-  return (
-    <StyledButtonCart
-      onClick={toggleCart}
-      aria-label="Toggle cart"
-      className={`cart-icon ${isInCart ? 'gold' : ''}`}
-    >
-      <FontAwesomeIcon icon={faShoppingCart} />
-    </StyledButtonCart>
-  );
-};

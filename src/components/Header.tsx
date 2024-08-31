@@ -1,16 +1,14 @@
 import { NavigationBar } from './NavigationBar';
 import {
   HeaderContainer,
-  Logo,
-  Container,
-} from '@/styled-components/HeaderStyles';
+} from '@/styled-components';
 
 export const Header = () => {
   return (
 
-      <Container>
+      <HeaderContainer>
         <NavigationBar />
-      </Container>
+      </HeaderContainer>
   
   );
 };

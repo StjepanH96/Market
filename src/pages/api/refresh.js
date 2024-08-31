@@ -11,9 +11,7 @@ export default async function handler(req, res) {
 
             const data = await response.json();
             if (response.ok) {
-                console.log('Generated refresh token:', data.token); // Log the generated token on the server
 
-                // Set the refreshed token with 1-minute expiry
                 res.setHeader('Set-Cookie', `token=${data.token}; HttpOnly; Secure; Path=/; SameSite=Strict; Max-Age=60`);
                 res.status(200).json(data);
             } else {

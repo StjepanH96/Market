@@ -1,15 +1,27 @@
-import React, { useState, useEffect, useRef } from 'react';
-import router from 'next/router';
+import React, { useState, useEffect, useRef } from "react";
 import {
   DropdownContainer,
   DropdownContent,
   DropdownItem,
-} from '@/styled-components/DropdownStyles';
-import { useProductData } from '@/lib';
-import { Category } from '@/types/categories';
-import { useProductActions } from '@/redux/reducers/products/productStateManagement';
+} from "@/styled-components/";
+import { useProductData } from "@/lib";
+import { Category } from "@/types/categories";
+import { useProductActions } from "@/redux/reducers/products/productStateManagement";
+import styled from "@emotion/styled";
 
-export const CategoryDropdown = ({ isOpen, toggleDropdown }:Any) => {
+type CategoryDropdownProps = {
+  isOpen: boolean;
+  toggleDropdown: () => void;
+  setSelectedCategory: (category: string) => void;
+  selectedCategory: string | null;
+};
+
+export const CategoryDropdown = ({
+  isOpen,
+  toggleDropdown,
+  setSelectedCategory,
+  selectedCategory,
+}: CategoryDropdownProps) => {
   const { productsCategoryList } = useProductData();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { initializeProductsByCategoryListState } = useProductActions();
@@ -19,11 +31,8 @@ export const CategoryDropdown = ({ isOpen, toggleDropdown }:Any) => {
   }, [initializeProductsByCategoryListState]);
 
   const handleProductClick = (categoryName: string) => {
-    const newRoute = `/product/category/${categoryName}`;
-    if (router.asPath !== newRoute) {
-      router.push(newRoute);
-    }
-    toggleDropdown(); // zatvaranje dropdowna nakon klika
+    setSelectedCategory(categoryName);
+    toggleDropdown();
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -31,32 +40,41 @@ export const CategoryDropdown = ({ isOpen, toggleDropdown }:Any) => {
       dropdownRef.current &&
       !dropdownRef.current.contains(event.target as Node)
     ) {
-      toggleDropdown(); // zatvaranje dropdowna klikom van njega
+      toggleDropdown();
     }
   };
 
   useEffect(() => {
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     }
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
 
+  const StyledDropdownItem = styled(DropdownItem)<{ isSelected: boolean }>`
+    background-color: ${(props) => (props.isSelected ? "#ddd" : "transparent")};
+    color: ${(props) => (props.isSelected ? "#000" : "#333")};
+    &:hover {
+      background-color: #ccc;
+    }
+  `;
+
   return (
     <DropdownContainer ref={dropdownRef}>
-      <DropdownContent className={isOpen ? 'show' : ''}>
+      <DropdownContent className={isOpen ? "show" : ""}>
         {productsCategoryList.length > 0 ? (
           productsCategoryList.map((category: Category, index: number) => (
-            <DropdownItem
+            <StyledDropdownItem
               key={index}
+              isSelected={category.name === selectedCategory}
               onClick={() => handleProductClick(category.name)}
             >
               {category.name}
-            </DropdownItem>
+            </StyledDropdownItem>
           ))
         ) : (
           <DropdownItem>No Categories</DropdownItem>

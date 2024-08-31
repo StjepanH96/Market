@@ -1,19 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useProductActions } from '../../redux/reducers/products/productStateManagement';
 import { LoadingSpinner, ProductCard, ErrorModal } from '@/components';
-import { useProductData } from '@/lib';
+import { useDataState, useProductData } from '@/lib';
 import { LoaderContainer, ProductGrid, ProductListContainer } from '@/styled-components/product';
-import { Product } from '@/types/products'; 
 import { ProductModal } from '@/components/ProductModal';
 
 const Home = () => {
   const { initializeProductsState } = useProductActions();
   const { products, error, loading, hasMore } = useProductData();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const loaderRef = useRef<HTMLDivElement | null>(null);
+  const {loaderRef, setCurrentPage, setSelectedProduct, setIsModalOpen, selectedProduct, isModalOpen} = useDataState();
 
   useEffect(() => {
     initializeProductsState({ page: 1, limit: 20 }); 
@@ -77,7 +72,7 @@ const Home = () => {
           ))}
         </ProductGrid>
         {!hasMore && (
-          <div style={{ padding: "20px", textAlign: "center" }}>
+          <div style={{ padding: "20px", textAlign: "center", color:"#000000" }}>
             {"A total of " + products.length + " products have been loaded."}
           </div>
         )}

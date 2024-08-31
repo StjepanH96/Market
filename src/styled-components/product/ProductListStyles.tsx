@@ -9,8 +9,10 @@ const ProductListContainer = styled.div`
   padding: 16px;
   margin-top: 5%;
 
-  @media (max-width: 968px) {
+
+  @media (max-width: 988px) {
     margin-top: 20%;
+    width:80%;
   }
 `;
 

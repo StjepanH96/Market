@@ -6,16 +6,18 @@ export interface ProductState {
   products: Product[];
   productDetails: Product | null;
   categories: Category[];
+  productsByCategories: Product[];
   loading: boolean;
   error: string | null;
   hasMore: boolean;
   sortedAndFilteredProducts: Product[];
-  totalPages: number;  // Dodajte ovo
-  currentPage: number;  // Dodajte ovo
+  totalPages: number; 
+  currentPage: number;  
 }
 
 const initialState: ProductState = {
   products: [],
+  productsByCategories:[],
   productDetails: null,
   categories: [],
   loading: false,
@@ -54,7 +56,7 @@ const productSlice = createSlice({
       state.error = null;
     },
     initializeProductsByCategory: (state, action: PayloadAction<ProductResponse>) => {
-      state.products = action.payload.products;
+      state.productsByCategories = action.payload.products;
       state.loading = false;
       state.error = null;
     },

@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   FavoriteStarContainer,
   ProductImage,
   ProductItem,
   ProductOverlay,
   ProductTitle,
-} from '../styled-components/product';
+} from "../styled-components/product";
 import {
   ProductInfo,
   ProductPrice,
   ProductDiscount,
   ProductRating,
-  ProductStock
+  ProductStock,
 } from "../styled-components/product/ProductStyled";
-import { Product } from '@/types/products';
-import { Cart } from './Cart';
-import { LoadingSpinner } from './Spinner';  
+import { Product } from "@/types/products";
+import { Cart } from "./Cart";
+import { LoadingSpinner } from "./Spinner";
 
 interface ProductCardProps {
   product: Product;
@@ -23,12 +23,23 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product, onProductClick }: ProductCardProps) => {
-  const [imageLoading, setImageLoading] = useState(true);  
+  const [imageLoading, setImageLoading] = useState(true);
   return (
     <ProductItem onClick={() => onProductClick(product.id)}>
       {imageLoading && (
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <LoadingSpinner loading={imageLoading} />  
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <LoadingSpinner loading={imageLoading} />
         </div>
       )}
       <ProductImage
@@ -36,7 +47,7 @@ export const ProductCard = ({ product, onProductClick }: ProductCardProps) => {
         alt={product.brand}
         onLoad={() => setImageLoading(false)}
         onError={() => setImageLoading(false)}
-        style={{ display: imageLoading ? 'none' : 'block' }}
+        style={{ display: imageLoading ? "none" : "block" }}
       />
       <FavoriteStarContainer>
         <Cart product={product} />

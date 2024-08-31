@@ -7,10 +7,14 @@ interface BannerProps {
 const ProductContainer = styled.div`
   padding: 16px;
   color: white;
-  background: #121212;
-  width: 100%;
+  background: #fff;
+  width: 80%;
   overflow: hidden;
+  color:black;
+  padding:0;
+  margin-left:10%;
   margin-top: 3%;
+  padding:50px;
   @media (max-width: 768px) {
     margin-top: 15%;
   }
@@ -97,6 +101,7 @@ const ProductTitleDetail = styled.h1`
 
 const ProductOverview = styled.p`
   font-size: 1rem;
+  color:black;
   line-height: 1.5;
   @media (min-width: 768px) {
     width: 80%;

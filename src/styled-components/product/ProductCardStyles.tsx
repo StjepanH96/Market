@@ -23,8 +23,9 @@ const ProductOverlay = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.2);
+  background: #001f3f;
   color: white;
+  opacity:0.4;
   text-align: center;
   padding: 8px;
   border-radius: 0 0 8px 8px;

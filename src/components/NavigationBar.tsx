@@ -1,15 +1,37 @@
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import { FaBars, FaTimes, FaUserCircle, FaShoppingCart, FaSearch, FaHome } from 'react-icons/fa';
-import { useAuth } from '../context/AuthContext';
-import { CategoryDropdown, CartDropdown, SearchBar } from './index';
-import { styled } from 'styled-components';
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import {
+  FaBars,
+  FaTimes,
+  FaUserCircle,
+  FaShoppingCart,
+  FaHome,
+  FaSearch,
+} from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
+import { CartDropdown } from "./CartDropdown";
+import { SearchBar } from "./SearchBar";
+import {
+  NavigationLogo,
+  MenuIcon,
+  NavigationLinks,
+  StyledButton,
+  StyledLink,
+  StyledLogoutButton,
+  StyledNavigation,
+  UserGreeting,
+} from "@/styled-components";
+import { useDataState } from "@/lib";
 
 export const NavigationBar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const {
+    setIsMobile,
+    setIsCartOpen,
+    isOpen,
+    isMobile,
+    isCartOpen,
+    setIsOpen,
+  } = useDataState();
   const auth = useAuth();
 
   useEffect(() => {
@@ -17,44 +39,57 @@ export const NavigationBar = () => {
       setIsMobile(window.innerWidth < 968);
     }
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       updateMobileStatus();
-      window.addEventListener('resize', updateMobileStatus);
+      window.addEventListener("resize", updateMobileStatus);
 
-      return () => window.removeEventListener('resize', updateMobileStatus);
+      return () => window.removeEventListener("resize", updateMobileStatus);
     }
   }, []);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  const toggleCategoryDropdown = () => setIsCategoryOpen(!isCategoryOpen);
-  const toggleCartDropdown = () => setIsCartOpen(!isCartOpen);
+  const toggleCartDropdown = () => {
+    setIsCartOpen(!isCartOpen);
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isOpen]);
 
   return (
     <StyledNavigation>
-      <Logo>Market</Logo>
+      <NavigationLogo>Market</NavigationLogo>
       <MenuIcon onClick={toggleMenu}>
         {isOpen ? <FaTimes /> : <FaBars />}
       </MenuIcon>
       <NavigationLinks $show={isOpen}>
         <Link href="/product/home" passHref>
-          <StyledLink onClick={toggleMenu}>
+          <StyledLink>
             <FaHome /> Home
           </StyledLink>
         </Link>
-        <div>
-          <StyledLink  onClick={toggleCategoryDropdown}>
+        <Link href="/product/categories" passHref>
+          <StyledLink>
             <FaShoppingCart /> Categories
           </StyledLink>
-          {isCategoryOpen && <CategoryDropdown isOpen={isCategoryOpen} toggleDropdown={toggleCategoryDropdown} />}
-        </div>
+        </Link>
+
         <div>
-          <StyledLink  onClick={toggleCartDropdown}>
-            <FaShoppingCart /> Cart
-          </StyledLink>
-          {isCartOpen && <CartDropdown isOpen={isCartOpen} toggleDropdown={toggleCartDropdown}/>}
+          <StyledButton onClick={toggleCartDropdown}>
+            <FaShoppingCart /> Your Cart
+          </StyledButton>
+          <CartDropdown
+            isOpen={isCartOpen}
+            toggleDropdown={toggleCartDropdown}
+          />
         </div>
-        {!isMobile && <SearchBar />}
+           <SearchBar />
+  
         {auth?.user && (
           <>
             <UserGreeting>
@@ -69,98 +104,3 @@ export const NavigationBar = () => {
     </StyledNavigation>
   );
 };
-
-const StyledNavigation = styled.nav`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #222831;
-  padding: 15px 30px;
-  position: relative;
-  z-index: 10;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width:100%;
-`;
-
-const Logo = styled.div`
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #ffd369;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: #ffac41;
-  }
-`;
-
-const MenuIcon = styled.div`
-  display: none;
-  color: #ffd369;
-  font-size: 1.8rem;
-  cursor: pointer;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: #ffac41;
-  }
-
-  @media (max-width: 968px) {
-    display: block;
-  }
-`;
-
-const NavigationLinks = styled.div<{ $show: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 20px;
-
-  @media (max-width: 968px) {
-    position: absolute;
-    top: 70px;
-    left: 0;
-    width: 100%;
-    background-color: #393e46;
-    padding: 20px;
-    flex-direction: column;
-    transform: ${({ $show }) => ($show ? 'translateY(0)' : 'translateY(-100%)')};
-    transition: transform 0.3s ease-in-out;
-  }
-`;
-
-const StyledLink = styled.a`
-  color: #eeeeee;
-  font-size: 1rem;
-  text-transform: uppercase;
-  font-weight: 600;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: #ffac41;
-  }
-
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-const UserGreeting = styled.span`
-  font-weight: bold;
-  color: #ffd369;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 1rem;
-`;
-
-const StyledLogoutButton = styled.button`
-  background-color: #ff7043;
-  border: none;
-  color: white;
-  cursor: pointer;
-  padding: 8px 16px;
-  font-size: 16px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-  `;
