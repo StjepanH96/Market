@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { LoadingSpinner } from "./Spinner";
-import { LoaderContainer } from "@/styled-components/product";
+import { LoginLoaderContainer } from "@/styled-components/product";
 import {
   LoginButton,
   FormControl,
@@ -46,9 +46,9 @@ const LoginForm = () => {
 
   if (auth?.loading) {
     return (
-      <LoaderContainer>
+      <LoginLoaderContainer>
         <LoadingSpinner loading={auth.loading} />
-      </LoaderContainer>
+      </LoginLoaderContainer>
     );
   }
 

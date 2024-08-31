@@ -156,6 +156,14 @@ const LoaderContainer = styled.div`
   margin-top: 30%;
 `;
 
+
+const LoginLoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+
+`;
 export {
   ProductContainer,
   Banner,
@@ -169,4 +177,5 @@ export {
   VideoModal,
   ProductDetail,
   LoaderContainer,
+  LoginLoaderContainer
 };
