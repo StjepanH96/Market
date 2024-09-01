@@ -36,7 +36,6 @@ export const refreshToken = async () => {
 
 };
 export const fetchProductsByCategory = async (categoryName: string | string[] | undefined, limit = 16) => {
-  // Append the limit parameter to the API request URL
   const url = `${BASE_URL}/products/category/${encodeURIComponent(String(categoryName))}?limit=${limit}`;
 
   try {

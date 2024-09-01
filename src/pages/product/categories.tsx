@@ -132,7 +132,6 @@ const CategoryPage = () => {
           />
         </div>
 
-        {/* Display filtered products */}
         {filterProducts(productsByCategory).length === 0 ? (
           <NoProductsMessage>
             No products available for this category or price range.
