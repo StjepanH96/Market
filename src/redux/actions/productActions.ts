@@ -22,11 +22,9 @@ const fetchInitializeProductsAction = ({ page, limit }: FetchProductsParams) => 
   const skip = (page - 1) * limit;
   try {
     const data = await fetchProducts({ limit, skip });
-    // Ensure the payload structure matches what the reducer expects
-    dispatch(initializeProducts(data)); // Use the action creator for consistency
+    dispatch(initializeProducts(data)); 
   } catch (error) {
     console.error('Error:', error);
-    // Dispatching error with potentially a more descriptive error message
     dispatch(setError('Failed to fetch products: ' ));
   }
 };

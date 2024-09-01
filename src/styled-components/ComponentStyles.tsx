@@ -231,7 +231,6 @@ const ReviewWrapper = styled.div`
     padding: 10px;
     border-radius: 8px;
     background: #f0f0f0;
-    border: 1px solid #eaeaea;
   }
 
  
@@ -342,7 +341,7 @@ const NavigationLinks = styled.div<{ $show: boolean }>`
    z-index: 10; 
   @media (max-width: 1362px) {
     position: fixed;
-    top: 75px; // Adjusted to align right below the nav bar
+    top: 75px; 
     left: 0;
     width: 100%;
     background-color: #002366;
@@ -398,7 +397,7 @@ const UserGreeting = styled.span`
   font-size: 1rem;
     @media (max-width: 1362px) {
       position: fixed;
-    top: 0; // Adjusted to align right below the nav bar
+    top: 0; 
     right: 0;
     margin-right:2%;
   }
@@ -504,9 +503,7 @@ const SearchBarDropdown = styled.ul<DropdownProps>`
   transform: ${(props) =>
     props.isOpen ? "translateY(0)" : "translateY(-20px)"};
 
-  @media (max-width: 1500px) {
-    margin-top: 3%;
-  }
+
 `;
 
 const SearchDropdownItem = styled.li`

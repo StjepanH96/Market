@@ -35,7 +35,6 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 0 20px;
   margin-top: 10%;
-  border:1px solid black;
 
   @media (max-width: 768px) {
     margin-top: 30%;
@@ -53,7 +52,6 @@ const ProductList = styled.div`
   overflow-x: auto;
   padding: 20px 0;
   align-items: center;
-    border:1px solid black;
 
 `;
 
@@ -71,7 +69,6 @@ const ProductItem = styled.div`
     position: relative;
   }
 
-    border:1px solid black;
 
 `;
 
