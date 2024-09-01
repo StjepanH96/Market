@@ -1,12 +1,11 @@
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 import {
   FaBars,
   FaTimes,
   FaUserCircle,
   FaShoppingCart,
   FaHome,
-  FaSearch,
 } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import { CartDropdown } from "./CartDropdown";
@@ -28,7 +27,6 @@ export const NavigationBar = () => {
     setIsMobile,
     setIsCartOpen,
     isOpen,
-    isMobile,
     isCartOpen,
     setIsOpen,
   } = useDataState();
@@ -52,7 +50,11 @@ export const NavigationBar = () => {
   const toggleCartDropdown = () => {
     setIsCartOpen(!isCartOpen);
   };
-
+  const handleLinkClick = () => {
+    if (isOpen) {
+      setIsOpen(false);
+    }
+  };
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -69,12 +71,12 @@ export const NavigationBar = () => {
       </MenuIcon>
       <NavigationLinks $show={isOpen}>
         <Link href="/product/home" passHref>
-          <StyledLink>
+          <StyledLink onClick={handleLinkClick}>
             <FaHome /> Home
           </StyledLink>
         </Link>
         <Link href="/product/categories" passHref>
-          <StyledLink>
+          <StyledLink onClick={handleLinkClick}>
             <FaShoppingCart /> Categories
           </StyledLink>
         </Link>
