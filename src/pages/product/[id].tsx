@@ -77,7 +77,7 @@ const ProductPage = () => {
                   </ProductDetail>
                   <ProductDetail>
                     <strong>Rating:</strong> {productsDetails.rating}
-                    <span className="star">★</span> {/* Unicode zvjezdica */}
+                    <span className="star">★</span> 
                   </ProductDetail>
                   <ProductDetail>
                     <strong>Available:</strong> {productsDetails.stock} units

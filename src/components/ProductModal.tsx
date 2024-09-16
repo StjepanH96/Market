@@ -51,7 +51,7 @@ export const ProductModal = ({
       </StyledParagraph>
       <RatingParagraph>
         <strong>Rating:</strong> {productDetails.rating}
-        <span className="star">★</span> {/* Unicode zvjezdica */}
+        <span className="star">★</span>
       </RatingParagraph>{" "}
       <StyledParagraph>
         <strong>Available:</strong> {productDetails.stock} units
