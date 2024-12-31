@@ -28,6 +28,7 @@ export const ErrorModal = ({ message, onClose }: ErrorModalProps) => {
     return null;
   }
 
+
   return (
     <ModalOverlay>
       <ModalContent>

@@ -1,4 +1,12 @@
-.next/
-.cache/
-node_modules
-.DS_Store
+node_modules/     
+.next/             
+build/            
+dist/             
+.env
+.env.production      
+.env.local        
+.DS_Store      
+coverage/        
+.vscode/           
+.idea/            
+*.log             

@@ -73,7 +73,7 @@ const Home = () => {
         </ProductGrid>
         {!hasMore && (
           <div style={{ padding: "20px", textAlign: "center", color:"#000000" }}>
-            {"A total of " + products.length + " products have been loaded."}
+            {"A total of " + products.length + " products h been loaded."}
           </div>
         )}
         {hasMore && (

@@ -22,6 +22,19 @@ let url = `${BASE_URL}/products?limit=${encodeURIComponent(limit)}&skip=${encode
   }
 };
 
+export const refreshToken = async () => {
+  const response = await fetch('/api/refresh', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          refreshToken: '',
+          expiresInMins: 30
+      })
+  });
+
+};
 export const fetchProductsByCategory = async (categoryName: string | string[] | undefined, limit = 16) => {
   const url = `${BASE_URL}/products/category/${encodeURIComponent(String(categoryName))}?limit=${limit}`;
 
