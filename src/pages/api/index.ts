@@ -1,15 +1,15 @@
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const fetchProducts = async ({ limit = 10, skip = 0 }) => {
-let url = `${BASE_URL}/products?limit=${encodeURIComponent(limit)}&skip=${encodeURIComponent(skip)}`;
+  let url = `${BASE_URL}/products?limit=${encodeURIComponent(limit)}&skip=${encodeURIComponent(skip)}`;
 
   try {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache'  
-      }
+        'Cache-Control': 'no-cache',
+      },
     });
     const data = await response.json();
     if (!response.ok) {
@@ -22,7 +22,10 @@ let url = `${BASE_URL}/products?limit=${encodeURIComponent(limit)}&skip=${encode
   }
 };
 
-export const fetchProductsByCategory = async (categoryName: string | string[] | undefined, limit = 16) => {
+export const fetchProductsByCategory = async (
+  categoryName: string | string[] | undefined,
+  limit = 16
+) => {
   const url = `${BASE_URL}/products/category/${encodeURIComponent(String(categoryName))}?limit=${limit}`;
 
   try {
@@ -30,11 +33,13 @@ export const fetchProductsByCategory = async (categoryName: string | string[] | 
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache'
-      }
+        'Cache-Control': 'no-cache',
+      },
     });
     if (!response.ok) {
-      throw new Error(`Failed to fetch products for category ${categoryName}: ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch products for category ${categoryName}: ${response.statusText}`
+      );
     }
     const data = await response.json();
     return data;
@@ -44,7 +49,10 @@ export const fetchProductsByCategory = async (categoryName: string | string[] | 
   }
 };
 
-export const fetchSortedProductsByPrice = async (sortBy = 'title', order = 'asc') => {
+export const fetchSortedProductsByPrice = async (
+  sortBy = 'title',
+  order = 'asc'
+) => {
   const url = `${BASE_URL}/products?sortBy=${sortBy}&order=${order}`;
 
   try {
@@ -52,11 +60,13 @@ export const fetchSortedProductsByPrice = async (sortBy = 'title', order = 'asc'
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache'
-      }
+        'Cache-Control': 'no-cache',
+      },
     });
     if (!response.ok) {
-      throw new Error(`Failed to fetch sorted products: ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch sorted products: ${response.statusText}`
+      );
     }
     const data = await response.json();
     return data;
@@ -67,7 +77,6 @@ export const fetchSortedProductsByPrice = async (sortBy = 'title', order = 'asc'
 };
 
 export const fetchProductsCategoryList = async () => {
-
   const url = `${BASE_URL}/products/categories`;
 
   try {
@@ -75,8 +84,8 @@ export const fetchProductsCategoryList = async () => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache'
-      }
+        'Cache-Control': 'no-cache',
+      },
     });
     if (!response.ok) {
       throw new Error(`Failed to fetch categories`);
@@ -87,10 +96,9 @@ export const fetchProductsCategoryList = async () => {
     console.error('Error fetching products by category:', error);
     throw error;
   }
+};
 
-}
-
-export const fetchProductById = async (productId:string | string[]) => {
+export const fetchProductById = async (productId: string | string[]) => {
   const url = `${BASE_URL}/products/${productId}`;
 
   try {
@@ -98,11 +106,13 @@ export const fetchProductById = async (productId:string | string[]) => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache'
-      }
+        'Cache-Control': 'no-cache',
+      },
     });
     if (!response.ok) {
-      throw new Error(`Failed to fetch product with ID ${productId}: ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch product with ID ${productId}: ${response.statusText}`
+      );
     }
     const data = await response.json();
     return data;

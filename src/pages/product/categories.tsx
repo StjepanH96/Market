@@ -7,6 +7,7 @@ import { Product } from '@/types/products';
 import { ProductModal } from '@/components/ProductModal';
 import { CategoryDropdown } from '@/components/CategoryDropdown';
 import styled from '@emotion/styled';
+import { useFilterData } from '@/lib/useFilterData';
 
 const NoProductsMessage = styled.div`
   color: white;
@@ -32,7 +33,7 @@ const Dropdown = styled.select`
   }
 `;
 
-const StyledButton =  styled.button`
+const StyledButton = styled.button`
 padding: 0.5rem 1rem;
 margin: 0.5rem;
 background-color: white;
@@ -48,13 +49,22 @@ cursor: pointer;
 
 const CategoryPage = () => {
   const { initializeProductsByCategoryState } = useProductActions();
-  const {productsByCategory, error, loading } = useProductData();
+  const { productsByCategory, error, loading } = useProductData();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [priceFilter, setPriceFilter] = useState('ALL');
-  const [sortMethod, setSortMethod] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null); 
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+
+  const {
+    priceFilter,
+    sortMethod,
+    filterProductsByPrice,
+    updatePriceFilter,
+    updateSortMethod,
+    selectedCategory,
+    selectedProduct,
+    setSelectedCategory,
+    setSelectedProduct,
+    setIsCategoryDropdownOpen,
+    isCategoryDropdownOpen
+  } = useFilterData();
 
   useEffect(() => {
     if (selectedCategory) {
@@ -75,44 +85,21 @@ const CategoryPage = () => {
     setSelectedProduct(null);
   };
 
-  const filterProducts = (products: Product[]) => {
-    let filtered = products.filter((product: Product) => {
-      if (priceFilter === '10-50') return product.price >= 10 && product.price <= 50;
-      if (priceFilter === '50-100') return product.price > 50 && product.price <= 100;
-      if (priceFilter === '100+') return product.price > 100;
-      return priceFilter === 'ALL';
-    });
-    return sortProducts(filtered);
-  };
 
-  const sortProducts = (products: Product[]) => {
-    switch (sortMethod) {
-      case 'price-asc':
-        return [...products].sort((a, b) => a.price - b.price);
-      case 'price-desc':
-        return [...products].sort((a, b) => b.price - a.price);
-      case 'name-asc':
-        return [...products].sort((a, b) => a.title.localeCompare(b.title));
-      case 'name-desc':
-        return [...products].sort((a, b) => b.title.localeCompare(a.title));
-      default:
-        return products;
-    }
-  };
   return (
     <>
       {error && <ErrorModal message={error} />}
 
       <ProductListContainer>
         <div>
-          <Dropdown value={priceFilter} onChange={e => setPriceFilter(e.target.value)}>
+          <Dropdown value={priceFilter} onChange={e => updatePriceFilter(e.target.value)}>
             <option value="ALL">All Prices</option>
             <option value="10-50">$10 - $50</option>
             <option value="50-100">$50 - $100</option>
             <option value="100+">$100+</option>
           </Dropdown>
 
-          <Dropdown value={sortMethod} onChange={e => setSortMethod(e.target.value)}>
+          <Dropdown value={sortMethod} onChange={e => updateSortMethod(e.target.value)}>
             <option value="">Sort By</option>
             <option value="price-asc">Price Low to High</option>
             <option value="price-desc">Price High to Low</option>
@@ -124,21 +111,21 @@ const CategoryPage = () => {
             Toggle Categories
           </StyledButton>
 
-          <CategoryDropdown 
-            isOpen={isCategoryDropdownOpen} 
+          <CategoryDropdown
+            isOpen={isCategoryDropdownOpen}
             toggleDropdown={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-            setSelectedCategory={setSelectedCategory} 
-            selectedCategory={selectedCategory} 
+            setSelectedCategory={setSelectedCategory}
+            selectedCategory={selectedCategory}
           />
         </div>
 
-        {filterProducts(productsByCategory).length === 0 ? (
+        {filterProductsByPrice(productsByCategory).length === 0 ? (
           <NoProductsMessage>
             No products available for this category or price range.
           </NoProductsMessage>
         ) : (
           <ProductGrid>
-            {filterProducts(productsByCategory).map((product: Product, index: number) => (
+            {filterProductsByPrice(productsByCategory).map((product: Product, index: number) => (
               <ProductCard
                 key={index}
                 product={product}

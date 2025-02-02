@@ -1,18 +1,44 @@
+
+
 import React, { useEffect, useState, useRef } from 'react';
+import { GetServerSideProps } from 'next';
 import { useProductActions } from '../../redux/reducers/products/productStateManagement';
 import { LoadingSpinner, ProductCard, ErrorModal } from '@/components';
 import { useDataState, useProductData } from '@/lib';
 import { LoaderContainer, ProductGrid, ProductListContainer } from '@/styled-components/product';
 import { ProductModal } from '@/components/ProductModal';
+import { fetchProducts } from '../api';
 
-const Home = () => {
+// SSR funkcija koja se koristi da preuzme proizvode sa servera
+export const getServerSideProps: GetServerSideProps = async () => {
+  try {
+    const productsData = await fetchProducts({ limit: 10, skip: 0 });
+
+    return {
+      props: {
+        products: productsData
+      }
+    };
+  } catch (error) {
+    return {
+      props: {
+        error: 'Failed to load products'
+      }
+    };
+  }
+};
+
+
+const Home = ({ products, error }: { products: any[], error: string }) => {
   const { initializeProductsState } = useProductActions();
-  const { products, error, loading, hasMore } = useProductData();
-  const {loaderRef, setCurrentPage, setSelectedProduct, setIsModalOpen, selectedProduct, isModalOpen} = useDataState();
+  const { products: stateProducts, error: stateError, loading, hasMore } = useProductData(); // ovo je bitno
+  const { loaderRef, setCurrentPage, setSelectedProduct, setIsModalOpen, selectedProduct, isModalOpen } = useDataState();
 
+  // Inicijalizuj state kada stranica učita proizvode
   useEffect(() => {
-    initializeProductsState({ page: 1, limit: 20 }); 
-  }, [initializeProductsState]);
+    initializeProductsState({ page: 1, limit: 20 })
+  }, [initializeProductsState, products]);
+
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -45,14 +71,15 @@ const Home = () => {
     });
   };
 
+
   const handleProductClick = (productId: number) => {
-    const selected = products.find(product => product.id === productId);
+
+    const selected = stateProducts.find((product) => product.id === productId);
     if (selected) {
       setSelectedProduct(selected);
       setIsModalOpen(true);
     }
-  };
-
+  }
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedProduct(null);
@@ -63,7 +90,7 @@ const Home = () => {
       {error && <ErrorModal message={error} />}
       <ProductListContainer>
         <ProductGrid>
-          {products.map((product, index) => (
+          {stateProducts.map((product, index) => (
             <ProductCard
               key={index}
               product={product}
@@ -72,25 +99,26 @@ const Home = () => {
           ))}
         </ProductGrid>
         {!hasMore && (
-          <div style={{ padding: "20px", textAlign: "center", color:"#000000" }}>
-            {"A total of " + products.length + " products have been loaded."}
+          <div style={{ padding: "20px", textAlign: "center", color: "#000000" }}>
+            {"A total of " + stateProducts.length + " products have been loaded."}
           </div>
         )}
         {hasMore && (
           <LoaderContainer ref={loaderRef}>
-            <LoadingSpinner loading={loading}/>
+            <LoadingSpinner loading={loading} />
           </LoaderContainer>
         )}
       </ProductListContainer>
       {selectedProduct && (
-          <ProductModal
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-            productDetails={selectedProduct}
-          />
+        <ProductModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          productDetails={selectedProduct}
+        />
       )}
     </>
   );
 };
 
 export default Home;
+
