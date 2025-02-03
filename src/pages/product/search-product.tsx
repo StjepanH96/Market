@@ -41,16 +41,23 @@ const SearchProduct = () => {
 
   const debouncedSearch = useCallback(
     debounce((query: string): void => {
-      if (query.length > 0) {
+      if (query.length >= 3) { // Minimum 3 characters check
         fetchSearchResults(query);
         setIsOpen(true);
       } else {
         setResults([]);
         setIsOpen(false);
       }
-    }, 300),
+    }, 500), // Increased debounce time to 500ms
     []
   );
+
+  // Add cleanup for debounce
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
 
   useEffect(() => {
     debouncedSearch(query);
@@ -95,7 +102,10 @@ const SearchProduct = () => {
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyDown}
       />
-      <Button onClick={() => query && fetchSearchResults(query)}>
+      <Button
+        onClick={() => query.length >= 3 && fetchSearchResults(query)}
+        disabled={query.length < 3}
+      >
         <FaSearch />
       </Button>
       {results.length > 0 && (

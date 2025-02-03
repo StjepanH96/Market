@@ -9,7 +9,6 @@ import { LoaderContainer, ProductGrid, ProductListContainer } from '@/styled-com
 import { ProductModal } from '@/components/ProductModal';
 import { fetchProducts } from '../api';
 
-// SSR funkcija koja se koristi da preuzme proizvode sa servera
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
     const productsData = await fetchProducts({ limit: 10, skip: 0 });
@@ -31,15 +30,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
 const Home = ({ products, error }: { products: any[], error: string }) => {
   const { initializeProductsState } = useProductActions();
-  const { products: stateProducts, error: stateError, loading, hasMore } = useProductData(); // ovo je bitno
+  const { products: stateProducts, error: stateError, loading, hasMore } = useProductData();
   const { loaderRef, setCurrentPage, setSelectedProduct, setIsModalOpen, selectedProduct, isModalOpen } = useDataState();
 
-  // Inicijalizuj state kada stranica učita proizvode
-  useEffect(() => {
-    initializeProductsState({ page: 1, limit: 20 })
-  }, [initializeProductsState, products]);
-
-
+  console.log("heloo");
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {

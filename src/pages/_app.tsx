@@ -7,8 +7,10 @@ import { AuthProvider } from '../context/AuthContext';
 import { GlobalStyle } from '../styled-components/GlobalStyle';
 import { Header, Footer } from '../components';
 
+
 function MyApp({ Component, pageProps }: AppProps) {
-  const getLayout = (Component as any).getLayout || ((page:any) => (
+
+  const getLayout = (Component as any).getLayout || ((page: any) => (
     <>
       <Header />
       {page}

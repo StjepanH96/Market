@@ -8,7 +8,7 @@ export const fetchProducts = async ({ limit = 10, skip = 0 }) => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache',
+        'Cache-Control': 'public, max-age=300',
       },
     });
     const data = await response.json();
